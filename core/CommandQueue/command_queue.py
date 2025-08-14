@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
-    from CommandQueue.command import Command
-    from CommandQueue.delayed_command import DelayedCommand
+    from commands.templates.command import Command
+    from commands.templates.delayed_command import DelayedCommand
     from EventBus.event_bus import EventBus
 
 class CommandQueue:
