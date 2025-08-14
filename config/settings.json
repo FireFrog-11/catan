@@ -1,0 +1,8 @@
+{
+    "general_settings": {
+        "screen_width": 1400,
+        "screen_height": 750,
+        "fullscreen": false,
+        "fps": 60
+    }
+}
