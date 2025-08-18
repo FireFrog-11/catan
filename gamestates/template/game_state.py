@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from pygame.event import Event
-    from pygame import surface
+    import pygame
 
 class GameState(ABC):
     """
@@ -48,7 +48,7 @@ class GameState(ABC):
 
 
     @abstractmethod
-    def render(self, screen: surface):
+    def render(self, screen: pygame.Surface):
         """
         Draw the state.
         """

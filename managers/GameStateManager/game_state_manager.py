@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from gamestates.template.game_state import GameState
     from pygame.event import Event
+    import pygame
 
 class GameStateManager:
     def __init__(self):
@@ -45,12 +46,12 @@ class GameStateManager:
         if self.state_stack:
             self.state_stack[-1].update(dt)
 
-    def render(self, screen):
+    def render(self, screen: pygame.Surface):
         """
-        This function renders the current state
+        This function renders all the states in the stack
         """
-        if self.state_stack:
-            self.state_stack[-1].render(screen)
+        for state in self.state_stack:
+            state.render(screen)
 
     def handle_event(self, event: Event):
         """

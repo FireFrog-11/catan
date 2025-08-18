@@ -1,9 +1,11 @@
 import pygame
 import json
 from typing import Dict
+import os
 
 class AssetManager:
-    def __init__(self):
+    def __init__(self, base_path="assets"):
+        self.base_path = base_path
         self.images: Dict[str, pygame.Surface] = {}
         self.sounds: Dict[str, pygame.mixer.Sound] = {}
         self.music: Dict[str, str] = {} # only stores path to music
@@ -16,21 +18,24 @@ class AssetManager:
             config: Dict[str, Dict[str, str]] = json.load(f)
 
         for key, file in config.get("images", {}).items():
-            self.images[key] = pygame.image.load(file).convert_alpha()
+            image_path = os.path.join(self.base_path, file)
+            self.images[key] = pygame.image.load(image_path).convert_alpha()
 
         for key, file in config.get("sounds", {}).items():
-            self.sounds[key] = pygame.mixer.Sound(file)
+            sound_path = os.path.join(self.base_path, file)
+            self.sounds[key] = pygame.mixer.Sound(sound_path)
 
         for key, file in config.get("music", {}).items():
-            self.music[key] = file
+            music_path = os.path.join(self.base_path, file)
+            self.music[key] = music_path
 
-    def get_image(self, key: str) -> str | None:
+    def get_image(self, key: str) -> pygame.Surface | None:
         """
         This function is used to get an image by name
         """
         return self.images.get(key)
 
-    def get_sound(self, key: str) -> str | None:
+    def get_sound(self, key: str) -> pygame.mixer.Sound | None:
         """
         This function is used to get a sound effect by name
         """
