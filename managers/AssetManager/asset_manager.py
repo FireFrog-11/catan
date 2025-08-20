@@ -4,6 +4,9 @@ from typing import Dict
 import os
 
 class AssetManager:
+    """
+    This class is responsible for importing and storing all the assets.
+    """
     def __init__(self, base_path="assets"):
         self.base_path = base_path
         self.images: Dict[str, pygame.Surface] = {}
@@ -12,7 +15,7 @@ class AssetManager:
 
     def load_from_config(self, path: str):
         """
-        This function loads and caches all the assets from a json config file
+        This function loads and caches all the assets from a json config file.
         """
         with open(path, 'r') as f:
             config: Dict[str, Dict[str, str]] = json.load(f)
@@ -31,19 +34,20 @@ class AssetManager:
 
     def get_image(self, key: str) -> pygame.Surface | None:
         """
-        This function is used to get an image by name
+        This function is used to get an image by name.
         """
         return self.images.get(key)
 
     def get_sound(self, key: str) -> pygame.mixer.Sound | None:
         """
-        This function is used to get a sound effect by name
+        This function is used to get a sound effect by name.
         """
         return self.sounds.get(key)
 
     def get_music_path(self, key: str) -> str | None:
         """
-        This function is used to get music by name
-        ONLY RETURNS PATH OF MUSIC
+        This function is used to get music by name.
+
+        ONLY RETURNS PATH OF MUSIC.
         """
         return self.music.get(key)

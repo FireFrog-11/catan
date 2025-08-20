@@ -7,11 +7,11 @@ if TYPE_CHECKING: # only for types. NOT IMPORTANT
 
 class DelayedCommand:
     """
-    This class turns a command into a delayed command
+    This class turns a command into a delayed command.
     """
     def __init__(self, command: Command, delay: int):
         """
-        Delay parameter should be in ms
+        Delay parameter should be in ms.
         """
         self.command: Command = command
         self.delay: float = delay / 1000 # convert to seconds
@@ -20,7 +20,7 @@ class DelayedCommand:
 
     def validate(self, game_state: any) -> bool:
         """
-        This function validates the command
+        This function validates the command.
         """
         if self.command.validate(game_state):
             self._validated = True
@@ -41,7 +41,7 @@ class DelayedCommand:
         
     def execute(self, game_state: any, event_bus: EventBus):
         """
-        This function executes command if validated
+        This function executes command if validated.
         """
         if self._validated:
             self.command.execute(game_state, event_bus)

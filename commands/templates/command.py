@@ -8,12 +8,14 @@ if TYPE_CHECKING: # only for types. NOT IMPORTANT
 class Command(ABC):
     """
     This class is just used as a structure for commands.
-    All commands should inherit from this class
+
+    All commands should inherit from this class.
     """
     @abstractmethod
     def validate(self, game_state: any) -> bool:
         """
         This function validates the function.
+
         The command will not run if it doesn't pass the validation.
         """
         pass  # subclasses must override this

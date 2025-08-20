@@ -4,11 +4,12 @@ from typing import List, TYPE_CHECKING
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from commands.templates.command import Command
     from commands.templates.delayed_command import DelayedCommand
-    from EventBus.event_bus import EventBus
+    from core.EventBus.event_bus import EventBus
 
 class CommandQueue:
     """
     This class is a simple command queue which executes commands if they pass validation.
+
     It contains functionality for delayed commands (useful for animations).
     """
     def __init__(self, event_bus: EventBus):

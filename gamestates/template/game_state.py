@@ -9,6 +9,7 @@ if TYPE_CHECKING: # only for types. NOT IMPORTANT
 class GameState(ABC):
     """
     This is a template for any gamestates.
+
     All gamestates should inherit from this class.
     """
     @abstractmethod

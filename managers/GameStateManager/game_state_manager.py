@@ -7,12 +7,15 @@ if TYPE_CHECKING: # only for types. NOT IMPORTANT
     import pygame
 
 class GameStateManager:
+    """
+    This class is responsible for handling all the gamestates.
+    """
     def __init__(self):
         self.state_stack: List[GameState] = []
 
     def push_state(self, state: GameState):
         """
-        This function adds a new state to the stack
+        This function adds a new state to the stack.
         """
         if self.state_stack:
             self.state_stack[-1].pause()
@@ -21,7 +24,7 @@ class GameStateManager:
 
     def pop_state(self):
         """
-        This function removes a state from the stack
+        This function removes a state from the stack.
         """
         if self.state_stack:
             self.state_stack[-1].exit()
@@ -31,7 +34,7 @@ class GameStateManager:
 
     def change_state(self, state: GameState):
         """
-        This function changes the current state to a new state
+        This function changes the current state to a new state.
         """
         if self.state_stack:
             self.state_stack[-1].exit()
@@ -41,21 +44,21 @@ class GameStateManager:
 
     def update(self, dt):
         """
-        This function updates the current state
+        This function updates the current state.
         """
         if self.state_stack:
             self.state_stack[-1].update(dt)
 
     def render(self, screen: pygame.Surface):
         """
-        This function renders all the states in the stack
+        This function renders all the states in the stack.
         """
         for state in self.state_stack:
             state.render(screen)
 
     def handle_event(self, event: Event):
         """
-        This function handles the events of the current state
+        This function handles the events of the current state.
         """
         if self.state_stack:
             self.state_stack[-1].handle_event(event)
