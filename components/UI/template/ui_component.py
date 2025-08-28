@@ -11,18 +11,17 @@ class UIComponent(ABC):
         self.enabled = enabled
         self.rect = pygame.FRect(0, 0, 0, 0,) # Override in subclasses
 
-    @abstractmethod
     def set_position(self, x: float, y: float):
         self.rect.topleft = (x, y)
 
-    @abstractmethod
     def move(self, dx: float, dy: float):
         self.rect.move_ip(dx, dy)
 
     @abstractmethod
     def handle_event(self, event: pygame.event.Event):
         if not self.visible or not self.enabled:
-            return
+            return False
+        return True
     
     @abstractmethod
     def update(self, dt: float):
@@ -31,4 +30,5 @@ class UIComponent(ABC):
     @abstractmethod
     def render(self, surface: pygame.Surface):
         if not self.visible:
-            return
+            return False
+        return True
