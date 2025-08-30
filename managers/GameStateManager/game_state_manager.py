@@ -1,5 +1,4 @@
-from __future__ import annotations
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from gamestates.template.game_state import GameState
@@ -11,7 +10,7 @@ class GameStateManager:
     This class is responsible for handling all the gamestates.
     """
     def __init__(self):
-        self.state_stack: List[GameState] = []
+        self.state_stack: list[GameState] = []
 
     def push_state(self, state: GameState):
         """

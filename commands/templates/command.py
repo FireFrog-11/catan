@@ -1,9 +1,9 @@
-from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from core.EventBus.event_bus import EventBus
+    from game.GameSession.game_session import GameSession
 
 class Command(ABC):
     """
@@ -12,7 +12,7 @@ class Command(ABC):
     All commands should inherit from this class.
     """
     @abstractmethod
-    def validate(self, game_state: any) -> bool:
+    def validate(self, game_session: GameSession) -> bool:
         """
         This function validates the function.
 
@@ -21,7 +21,7 @@ class Command(ABC):
         pass  # subclasses must override this
 
     @abstractmethod
-    def execute(self, game_state: any, event_bus: EventBus):
+    def execute(self, game_session: GameSession, event_bus: EventBus):
         """
         This function contains what should happen if the command passes validation.
         """

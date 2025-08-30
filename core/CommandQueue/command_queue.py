@@ -1,5 +1,4 @@
-from __future__ import annotations
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from commands.templates.command import Command
@@ -13,7 +12,7 @@ class CommandQueue:
     It contains functionality for delayed commands (useful for animations).
     """
     def __init__(self, event_bus: EventBus):
-        self._queue: List[Command | DelayedCommand] = []
+        self._queue: list[Command | DelayedCommand] = []
         self.event_bus: EventBus = event_bus
 
     def add(self, command: Command | DelayedCommand, game_state: any):

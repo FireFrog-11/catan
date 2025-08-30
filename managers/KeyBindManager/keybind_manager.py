@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Callable, TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT

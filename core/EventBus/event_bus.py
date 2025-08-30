@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List
+from typing import Callable
 
 class EventBus:
     """
@@ -12,9 +12,9 @@ class EventBus:
         """
         This defines the lists which store al the listeners and middlewares.
         """
-        self._listeners: Dict[str, List[Callable]] = {}
-        self._middleware_register: Dict[str, Callable] = {}
-        self._active_middleware: List[Callable] = []
+        self._listeners: dict[str, list[Callable]] = {}
+        self._middleware_register: dict[str, Callable] = {}
+        self._active_middleware: list[Callable] = []
 
     def register_middleware(self, name: str, middleware_function: Callable):
         """
@@ -23,7 +23,7 @@ class EventBus:
         if not self._middleware_register.get(name):
             self._middleware_register[name] = middleware_function
 
-    def register_middleware_dict(self, middleware_dict: Dict[str, Callable]):
+    def register_middleware_dict(self, middleware_dict: dict[str, Callable]):
         """
         This function registers multiple middleware at once.
         """
@@ -50,7 +50,7 @@ class EventBus:
         else:
             print(f"Middleware {name} not activated or isn't registered")
 
-    def activate_middleware_preset(self, preset: List[str]):
+    def activate_middleware_preset(self, preset: list[str]):
         """
         This function activates a middleware preset.
 

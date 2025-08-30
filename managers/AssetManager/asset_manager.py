@@ -1,6 +1,5 @@
 import pygame
 import json
-from typing import Dict
 import os
 
 class AssetManager:
@@ -9,16 +8,16 @@ class AssetManager:
     """
     def __init__(self, base_path="assets"):
         self.base_path = base_path
-        self.images: Dict[str, pygame.Surface] = {}
-        self.sounds: Dict[str, pygame.mixer.Sound] = {}
-        self.music: Dict[str, str] = {} # only stores path to music
+        self.images: dict[str, pygame.Surface] = {}
+        self.sounds: dict[str, pygame.mixer.Sound] = {}
+        self.music: dict[str, str] = {} # only stores path to music
 
     def load_from_config(self, path: str):
         """
         This function loads and caches all the assets from a json config file.
         """
         with open(path, 'r') as f:
-            config: Dict[str, Dict[str, str]] = json.load(f)
+            config: dict[str, dict[str, str]] = json.load(f)
 
         for key, file in config.get("images", {}).items():
             image_path = os.path.join(self.base_path, file)

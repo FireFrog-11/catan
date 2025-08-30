@@ -1,9 +1,9 @@
-from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from commands.templates.command import Command
     from core.EventBus.event_bus import EventBus
+    from game.GameSession.game_session import GameSession
 
 class DelayedCommand:
     """
@@ -18,11 +18,11 @@ class DelayedCommand:
         self.elapsed: float = 0
         self._validated: bool = False
 
-    def validate(self, game_state: any) -> bool:
+    def validate(self, game_session: GameSession) -> bool:
         """
         This function validates the command.
         """
-        if self.command.validate(game_state):
+        if self.command.validate(game_session):
             self._validated = True
             self.elapsed = 0
             return True
@@ -37,11 +37,14 @@ class DelayedCommand:
         return False
     
     def update(self, dt: float):
+        """
+        This function updates the command.
+        """
         self.elapsed += dt
         
-    def execute(self, game_state: any, event_bus: EventBus):
+    def execute(self, game_session: GameSession, event_bus: EventBus):
         """
         This function executes command if validated.
         """
         if self._validated:
-            self.command.execute(game_state, event_bus)
+            self.command.execute(game_session, event_bus)

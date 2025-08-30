@@ -3,13 +3,19 @@ from components.Game.edge import Edge
 from components.Game.vertex import Vertex
 
 class Board:
-    def __init__(self):
-        self.size = 2
-        self.hexes = {}
-        self.vertices = {}
-        self.edges = {}
+    """
+    This class represents a game board.
 
-        self.CORNER_OFFSETS = [
+    It contains all the vertices, edges and hexes.
+    It also contains all the links between these components.
+    """
+    def __init__(self):
+        self.size: int = 2 # radius of catan board (default catan board is radius 2)
+        self.hexes: dict[tuple[int, int], Hex] = {} # dict of all hexes
+        self.vertices: dict[tuple[int, int, int], Vertex] = {} # dict of all vertices
+        self.edges: dict[tuple[tuple[int, int, int], tuple[int, int, int]], Edge] = {} # dict of all edges
+
+        self.CORNER_OFFSETS: list[tuple[int, int, int]] = [
             (1, 0, -1),
             (1, -1, 0),
             (0, -1, 1),
@@ -19,13 +25,25 @@ class Board:
         ]
 
     def create_board(self):
+        """
+        This function creates the actual game board.
+
+        THIS SHOULD ONLY BE CALLED ONCE.
+        """
         for q in range(-self.size, self.size + 1):
             for r in range(-self.size, self.size + 1):
                 if abs(q + r) <= self.size:
                     self.build_hex(q, r)
 
-    def build_hex(self, q, r):
-        hex_ = Hex(q, r, "temp_type", "temp_num")
+        self.link_graph() # automatically sets up board links
+
+    def build_hex(self, q: int, r: int):
+        """
+        This function creates a hex for the given coordinates.
+
+        THIS FUNCTION SHOULD NOT NEED TO BE CALLED OUTSIDE THE CREATE_BOARD FUNCTION.
+        """
+        hex_ = Hex(q, r, "temp_type", 0)
         self.hexes[(q, r)] = hex_
         x, y, z = hex_.cube_coordinates
 
@@ -44,7 +62,7 @@ class Board:
             offset2 = self.CORNER_OFFSETS[next_i]
             vertex2_key = (x + offset2[0], y + offset2[1], z + offset2[2])
 
-            edge_key = tuple(sorted([vertex1_key, vertex2_key]))
+            edge_key = (vertex1_key, vertex2_key) if vertex1_key < vertex2_key else (vertex2_key, vertex1_key) # ensures consisted ordering. (V1, V2) == (V2, V1)
             if edge_key not in self.edges:
                 self.edges[edge_key] = Edge(vertex1_key, vertex2_key)
             edge = self.edges[edge_key]
@@ -52,6 +70,11 @@ class Board:
             hex_.edges.append(edge)
 
     def link_graph(self):
+        """
+        This function creates all the links between the vertices and edges.
+
+        THIS FUNCTION SHOULD NOT NEED TO BE CALLED OUTSIDE THE CREATE_BOARD FUNCTION.
+        """
         # links edges to vertices and vertices to edges
         for edge_key, edge in self.edges.items():
             vertex1_key, vertex2_key = edge_key

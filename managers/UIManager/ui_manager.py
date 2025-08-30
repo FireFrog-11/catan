@@ -1,5 +1,4 @@
-from __future__ import annotations
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     import pygame
@@ -10,7 +9,7 @@ class UIManager:
     This class handles updating and rendering all UI elements.
     """
     def __init__(self):
-        self.components: List[UIComponent] = []
+        self.components: list[UIComponent] = []
         
     def add_component(self, component: UIComponent):
         """
