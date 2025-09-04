@@ -1,4 +1,7 @@
 {
+    "game": {
+        "victory_points_to_win": 10
+    },
     "players": {
         "3_player_colours": ["red", "white", "blue"],
         "4_player_colours": ["red", "white", "blue", "orange"]
@@ -16,5 +19,21 @@
         "road_building": 2,
         "year_of_plenty": 2,
         "monopoly": 2
+    },
+    "settlement": {
+        "resource_amount": 1,
+        "victory_points": 1
+    },
+    "city": {
+        "resource_amount": 2,
+        "victory_points": 2
+    },
+    "longest_road": {
+        "victory_points": 2,
+        "minimum_roads": 5
+    },
+    "largest_army": {
+        "victory_points": 2,
+        "minimum_knights": 3
     }
 }
