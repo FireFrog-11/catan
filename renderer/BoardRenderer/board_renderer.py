@@ -6,6 +6,9 @@ import math
 pygame.init()
 
 class BoardRenderer:
+    """
+    This class is what actually renders the game board.
+    """
     def __init__(self, screen: pygame.Surface):
         self.screen: pygame.Surface = screen
         self.config = self._load_config()
@@ -22,18 +25,22 @@ class BoardRenderer:
         self._draw_roads()
 
     def _draw_background(self):
+        """
+        Draws background
+        """
         background_colour = self.config["background_colour"]
         
         self.screen.fill(background_colour)
 
     def _draw_hexes(self):
+        """
+        Draws all the hexes and number tiles.
+        """
         hexes = game_session.board.hexes
 
         for hex in hexes.values():
-            x, y = self.axial_to_pixel(hex.axial_coordinates)
-            x += self.config["hex_x_offset"]
-            y += self.config["hex_y_offset"]
-            points = self._get_hex_points((x, y))
+            x, y = hex.pixel_coordinates
+            points = hex.vertices_pixel_coordinates
 
             colour = self._get_hex_colour(hex.hex_type)
 
@@ -41,33 +48,23 @@ class BoardRenderer:
 
             self._draw_number_tile((x, y), hex.number_tile) # draw number tile ontop of hex
 
-    def _get_hex_colour(self, hex_type: str):
+    def _get_hex_colour(self, hex_type: str) -> tuple[int, int, int]:
+        """
+        Gets the hex colours based on the hex type using the config.
+        """
         colour_config = self.config["hex_colours"]
 
         colour = colour_config[hex_type]
 
         return colour
 
-    def _get_hex_points(self, center_coor: tuple[float, float]):
-        center_x, center_y = center_coor
-        hex_size = self.config["hex_size"]
-        points = []
-
-        for i in range(6):
-            angle_deg = 60 * i - 30
-
-            angle_rad = math.radians(angle_deg)
-            x = center_x + hex_size * math.cos(angle_rad)
-            y = center_y + hex_size * math.sin(angle_rad)
-            points.append((x, y))
-
-        return points
-
     def _draw_robber(self):
         pass
 
-    def _draw_number_tile(self, coordinates: tuple[int, int], number_tile):
-        
+    def _draw_number_tile(self, coordinates: tuple[float, float], number_tile: int):
+        """
+        This function draws the number tile for a certain hex tile.
+        """
         font_name = self.config["number_tile"]["font"]
         font_size = self.config["number_tile"]["font_size"]
         font_colour = self.config["number_tile"]["font_colour"]
@@ -90,15 +87,6 @@ class BoardRenderer:
 
     def _draw_roads(self):
         pass
-
-    def axial_to_pixel(self, axial_coor: tuple[int, int]):
-        hex_size = self.config["hex_size"]
-        q, r = axial_coor
-
-        x = hex_size * math.sqrt(3) * (q + r/2)
-        y = hex_size * 3/2 * r
-
-        return (x, y)
 
     def _load_config(self):
         """

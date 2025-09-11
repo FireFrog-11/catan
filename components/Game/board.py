@@ -79,6 +79,7 @@ class Board:
                 self.vertices[vertex1_key] = Vertex(vertex1_key)
             vertex = self.vertices[vertex1_key]
             vertex.hexes.append(hex_)
+            vertex.pixel_coordinates = hex_.vertices_pixel_coordinates[i]
             hex_.vertices.append(vertex)
 
             # edges
@@ -105,6 +106,7 @@ class Board:
             vertex1 = self.vertices[vertex1_key]
             vertex2 = self.vertices[vertex2_key]
             edge.vertices = [vertex1, vertex2]
+            edge.pixel_coordinates = [vertex1.pixel_coordinates, vertex2.pixel_coordinates]
             vertex1.edges.append(edge)
             vertex2.edges.append(edge)
 

@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING
+import math
+import json
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from components.Game.vertex import Vertex
@@ -9,12 +11,51 @@ class Hex:
     This class represents a hex tile in the game board.
     """
     def __init__(self, q: int, r: int, hex_type: str, number_tile: int):
+        self.hex_x_offset = 0
+        self.hex_y_offset = 0
+        self.hex_size = 0
+        self._load_config()
+
         self.axial_coordinates: tuple[int, int] = (q, r)
         self.cube_coordinates: tuple[int, int, int] = self.axial_to_cube(self.axial_coordinates)
+        self.pixel_coordinates: tuple[float, float] = self.axial_to_pixel(self.axial_coordinates)
         self.hex_type: str = hex_type
         self.number_tile: int = number_tile
         self.edges: list[Edge] = []
         self.vertices: list[Vertex] = []
+        self.vertices_pixel_coordinates: list[tuple[float, float]] = self.get_hex_vertex_coords()
+
+    def axial_to_pixel(self) -> tuple[float, float]:
+        """
+        This converts axial coordinates into pixel coordinates.
+        """
+        hex_size = self.config["hex_size"]
+        q, r = self.axial_coordinates
+
+        x = hex_size * math.sqrt(3) * (q + r/2)
+        y = hex_size * 3/2 * r
+
+        x += self.hex_x_offset
+        y += self.hex_y_offset
+
+        return (x, y)
+    
+    def get_hex_vertex_coords(self) -> list[tuple[float, float]]:
+        """
+        This returns the pixel coordinates of each hex's vertices.
+        """
+        center_x, center_y = self.pixel_coordinates
+        points = []
+
+        for i in range(6):
+            angle_deg = 60 * i - 30
+
+            angle_rad = math.radians(angle_deg)
+            x = center_x + self.hex_size * math.cos(angle_rad)
+            y = center_y + self.hex_size * math.sin(angle_rad)
+            points.append((x, y))
+
+        return points
 
     def axial_to_cube(self, axial_coordinates: tuple[int, int]) -> tuple[int, int, int]:
         """
@@ -24,3 +65,16 @@ class Hex:
         z = axial_coordinates[1]
         y = -x -z
         return (x, y, z)
+    
+    def _load_config(self):
+        """
+        Loads config files for game.
+
+        Will be replaced once save/load system is made.
+        """
+        with open(r"C:\Users\isaac\OneDrive\Documents\GitHub\catan\config\renderer_config.json", "r") as f:
+            file = json.load(f)
+
+            self.hex_x_offset = file["hex_x_offset"]
+            self.hex_y_offset = file["hex_y_offset"]
+            self.hex_size = file["hex_size"]

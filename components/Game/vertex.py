@@ -19,3 +19,6 @@ class Vertex:
 
         # BUILDING INFO
         self.building: None | Settlement | City = None # this variable will change based on what is on this tile
+
+        # RENDERING INFO
+        self.pixel_coordinates: tuple[int, int] = ()

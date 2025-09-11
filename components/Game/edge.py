@@ -18,3 +18,6 @@ class Edge:
 
         # ROAD INFO
         self.road: None | Road = None
+
+        # RENDERING INFO
+        self.pixel_coordinates: list[tuple[int, int]] = []
