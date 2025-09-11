@@ -1,5 +1,8 @@
 import json
-from components.Game.player import Player
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING: # only for types. NOT IMPORTANT
+    from components.Game.player import Player
 
 class LongestRoad:
     """

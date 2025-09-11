@@ -35,5 +35,9 @@
     "largest_army": {
         "victory_points": 2,
         "minimum_knights": 3
+    },
+    "hex_info": {
+        "hex_type_list": ["forest", "forest", "forest", "forest", "pasture", "pasture", "pasture", "pasture", "fields", "fields", "fields", "fields", "hills", "hills", "hills", "mountains", "mountains", "mountains", "desert"],
+        "number_tile_list": [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12]
     }
 }

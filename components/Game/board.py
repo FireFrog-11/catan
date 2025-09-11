@@ -1,6 +1,8 @@
 from components.Game.hex import Hex
 from components.Game.edge import Edge
 from components.Game.vertex import Vertex
+import random
+import json
 
 class Board:
     """
@@ -14,6 +16,11 @@ class Board:
         self.hexes: dict[tuple[int, int], Hex] = {} # dict of all hexes
         self.vertices: dict[tuple[int, int, int], Vertex] = {} # dict of all vertices
         self.edges: dict[tuple[tuple[int, int, int], tuple[int, int, int]], Edge] = {} # dict of all edges
+
+        self.hex_type_amounts: list[str] = []
+        self.number_tile_amounts: list[int] = []
+
+        self._load_config()
 
         self.CORNER_OFFSETS: list[tuple[int, int, int]] = [
             (1, 0, -1),
@@ -37,13 +44,30 @@ class Board:
 
         self.link_graph() # automatically sets up board links
 
+    def get_hex_info(self):
+        """
+        This function is the logic for giving each hex tile its type and number tile.
+        """
+        hex_type = random.choice(self.hex_type_amounts)
+        self.hex_type_amounts.remove(hex_type)
+
+        if hex_type != 'desert':
+            number_tile = random.choice(self.number_tile_amounts)
+            self.number_tile_amounts.remove(number_tile)
+            return (hex_type, number_tile)
+        else:
+            return (hex_type, 0) # desert tile gets given number tile of 0
+
     def build_hex(self, q: int, r: int):
         """
         This function creates a hex for the given coordinates.
 
         THIS FUNCTION SHOULD NOT NEED TO BE CALLED OUTSIDE THE CREATE_BOARD FUNCTION.
         """
-        hex_ = Hex(q, r, "temp_type", 0)
+        hex_type, number_tile = self.get_hex_info()
+        
+        hex_ = Hex(q, r, hex_type, number_tile)
+
         self.hexes[(q, r)] = hex_
         x, y, z = hex_.cube_coordinates
 
@@ -97,3 +121,15 @@ class Board:
                 for new_edge in vertex.edges:
                     if new_edge is not edge and new_edge not in edge.edges:
                         edge.edges.append(new_edge)
+
+    def _load_config(self):
+        """
+        Loads config files for game.
+
+        Will be replaced once save/load system is made.
+        """
+        with open(r"C:\Users\isaac\OneDrive\Documents\GitHub\catan\config\game_config.json", "r") as f:
+            file = json.load(f)
+
+            self.hex_type_amounts = file["hex_info"]["hex_type_list"]
+            self.number_tile_amounts = file["hex_info"]["number_tile_list"]

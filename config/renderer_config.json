@@ -1,0 +1,22 @@
+{
+    "background_colour": "black",
+    "hex_size": 100,
+    "hex_x_offset": 750,
+    "hex_y_offset": 425,
+    "hex_colours": {
+        "forest": [34, 139, 34],
+        "pasture": [144, 238, 144],
+        "fields": [255, 215, 0],
+        "hills": [178, 34, 34],
+        "mountains": [169, 169, 169],
+        "desert": [238, 214, 175]
+    },
+    "number_tile": {
+        "background_radius": 25,
+        "number_tile_background_colour": [100, 100, 100],
+        "font": "arial",
+        "font_size": 20,
+        "font_colour": [255, 255, 255],
+        "bold": true
+    }
+}

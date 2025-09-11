@@ -8,7 +8,7 @@ class GameSession:
 
     It stores everything required to know the exact state of the game.
     """
-    def __init__(self, player_amount: int):
+    def __init__(self, player_amount: int=4):
         # game configs
         self.player_colours: dict[str, list[str]] = {}
         self.resource_cards_supply: dict[str, int] = {}
@@ -21,6 +21,7 @@ class GameSession:
 
         # board
         self.board: Board = Board()
+        self.board.create_board()
 
     def create_players(self, player_amount: int):
         """

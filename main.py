@@ -1,6 +1,7 @@
 import pygame
 import json
 import sys
+from renderer.BoardRenderer.board_renderer import BoardRenderer
 
 class Main:
     def __init__(self):
@@ -10,6 +11,8 @@ class Main:
 
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
+
+        self.board_renderer = BoardRenderer(self.screen)
 
     def run(self):
         while  True:
@@ -24,6 +27,8 @@ class Main:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         sys.exit()
+
+            self.board_renderer.render_board()
 
             pygame.display.update()
 
