@@ -1,7 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import pygame
-from globals.game_session import game_session
 import json
-import math
+
+if TYPE_CHECKING: # only for types. NOT IMPORTANT
+    from game.GameSession.game_session import GameSession
 
 pygame.init()
 
@@ -9,14 +12,15 @@ class BoardRenderer:
     """
     This class is what actually renders the game board.
     """
-    def __init__(self, screen: pygame.Surface):
-        self.screen: pygame.Surface = screen
+    def __init__(self, game_session: GameSession):
         self.config = self._load_config()
 
-    def render_board(self):
-        self._draw_background()
+        self.game_session: GameSession = game_session
 
-        self._draw_hexes()
+    def render_board(self, screen):
+        self._draw_background(screen)
+
+        self._draw_hexes(screen)
 
         self._draw_robber()
 
@@ -24,19 +28,19 @@ class BoardRenderer:
 
         self._draw_roads()
 
-    def _draw_background(self):
+    def _draw_background(self, screen: pygame.Surface):
         """
         Draws background
         """
         background_colour = self.config["background_colour"]
         
-        self.screen.fill(background_colour)
+        screen.fill(background_colour)
 
-    def _draw_hexes(self):
+    def _draw_hexes(self, screen: pygame.Surface):
         """
         Draws all the hexes and number tiles.
         """
-        hexes = game_session.board.hexes
+        hexes = self.game_session.board.hexes
 
         for hex in hexes.values():
             x, y = hex.pixel_coordinates
@@ -44,9 +48,9 @@ class BoardRenderer:
 
             colour = self._get_hex_colour(hex.hex_type)
 
-            pygame.draw.polygon(self.screen, colour, points) # draw hex
+            pygame.draw.polygon(screen, colour, points) # draw hex
 
-            self._draw_number_tile((x, y), hex.number_tile) # draw number tile ontop of hex
+            self._draw_number_tile((x, y), hex.number_tile, screen) # draw number tile ontop of hex
 
     def _get_hex_colour(self, hex_type: str) -> tuple[int, int, int]:
         """
@@ -61,7 +65,7 @@ class BoardRenderer:
     def _draw_robber(self):
         pass
 
-    def _draw_number_tile(self, coordinates: tuple[float, float], number_tile: int):
+    def _draw_number_tile(self, coordinates: tuple[float, float], number_tile: int, screen: pygame.Surface):
         """
         This function draws the number tile for a certain hex tile.
         """
@@ -78,9 +82,9 @@ class BoardRenderer:
         text = font.render(str(number_tile), True, font_colour)
         text_rect = text.get_frect(center=(coordinates))
 
-        pygame.draw.circle(self.screen, background_colour, coordinates, background_radius)
+        pygame.draw.circle(screen, background_colour, coordinates, background_radius)
 
-        self.screen.blit(text, text_rect)
+        screen.blit(text, text_rect)
 
     def _draw_buildings(self):
         pass

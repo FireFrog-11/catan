@@ -1,7 +1,8 @@
 import pygame
 import json
 import sys
-from renderer.BoardRenderer.board_renderer import BoardRenderer
+from globals.gamestatemanager import gamestate_manager
+from gamestates.catan_state import CatanState
 
 class Main:
     def __init__(self):
@@ -12,11 +13,16 @@ class Main:
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
 
-        self.board_renderer = BoardRenderer(self.screen)
+        self.gamestate_manager = gamestate_manager
+
+        self.catan_state = CatanState()
+
+        self.gamestate_manager.push_state(self.catan_state)
 
     def run(self):
-        while  True:
-            self.clock.tick(self.settings["fps"])
+        while True:
+            dt = self.clock.tick(self.settings["fps"]) / 1000
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -28,7 +34,11 @@ class Main:
                         pygame.quit()
                         sys.exit()
 
-            self.board_renderer.render_board()
+                self.gamestate_manager.handle_event(event)
+
+            self.gamestate_manager.update(dt)
+
+            self.gamestate_manager.render(self.screen)
 
             pygame.display.update()
 
