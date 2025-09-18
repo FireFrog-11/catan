@@ -25,15 +25,14 @@ class Hex:
         self.vertices: list[Vertex] = []
         self.vertices_pixel_coordinates: list[tuple[float, float]] = self.get_hex_vertex_coords()
 
-    def axial_to_pixel(self) -> tuple[float, float]:
+    def axial_to_pixel(self, axial_coordinates: tuple[int, int]) -> tuple[float, float]:
         """
         This converts axial coordinates into pixel coordinates.
         """
-        hex_size = self.config["hex_size"]
-        q, r = self.axial_coordinates
+        q, r = axial_coordinates
 
-        x = hex_size * math.sqrt(3) * (q + r/2)
-        y = hex_size * 3/2 * r
+        x = self.hex_size * math.sqrt(3) * (q + r/2)
+        y = self.hex_size * 3/2 * r
 
         x += self.hex_x_offset
         y += self.hex_y_offset
