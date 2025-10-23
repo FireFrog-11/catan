@@ -14,7 +14,7 @@ class Player:
     """
     This class represents a player and stores all the information related to each player.
     """
-    def __init__(self, player_colour: str):
+    def __init__(self, player_colour: str, player_number: int):
         # special cards
         self.largest_army: LargestArmy = largest_army
         self.longest_road: LongestRoad = longest_road
@@ -27,6 +27,7 @@ class Player:
 
 
         self.player_colour: str = player_colour
+        self.player_number: int = player_number
 
         self.resource_cards: dict[str, int] = {}
         self.development_cards: dict[str, list[DevelopmentCard]] = {}

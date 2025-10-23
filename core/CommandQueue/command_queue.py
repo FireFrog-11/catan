@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from commands.templates.command import Command
     from commands.templates.delayed_command import DelayedCommand
-    from core.EventBus.event_bus import EventBus
 
 class CommandQueue:
     """
@@ -11,9 +10,8 @@ class CommandQueue:
 
     It contains functionality for delayed commands (useful for animations).
     """
-    def __init__(self, event_bus: EventBus):
+    def __init__(self):
         self._queue: list[Command | DelayedCommand] = []
-        self.event_bus: EventBus = event_bus
 
     def add(self, command: Command | DelayedCommand, game_state: any):
         """
@@ -28,7 +26,7 @@ class CommandQueue:
         """
         This function will process all current commands.
         """
-        ready = []
+        ready: list[Command] = []
         for command in self._queue:
             if not hasattr(command, "is_ready") or command.is_ready():
                 ready.append(command)
@@ -38,4 +36,4 @@ class CommandQueue:
         
         for command in ready:
             self._queue.remove(command)
-            command.execute(game_state, self.event_bus)
+            command.execute(game_state)

@@ -19,6 +19,8 @@ class GameSession:
         # players
         self.players: list[Player] = self.create_players(player_amount)
 
+        self.player_turn: int = 1 # default (game starts with player 1)
+
         # board
         self.board: Board = Board()
         self.board.create_board()
@@ -37,7 +39,7 @@ class GameSession:
 
         # create players
         for i in range(player_amount):
-            players.append(Player(player_colours[i]))
+            players.append(Player(player_colours[i]), i + 1)
 
         return players
 
