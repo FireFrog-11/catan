@@ -26,25 +26,35 @@ class Button(UIComponent):
         self.rect: pygame.Rect = pygame.FRect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 
         # below is the code to format the text label into the center of the frame
-        self.text_label = TextLabel(self.name, self.text, (0, 0), self.text_colour, self.text_size, self.bold, self.italic)
-        frame_centerx, frame_centery = self.rect.center
-        print(frame_centerx, frame_centery)
-        x,y = self.text_label.rect.size
-        print(x, y)
-        text_label_pos = (frame_centerx - x/2, frame_centery - y/2)
+        if self.text != "":
+            self.text_label = TextLabel(self.name, self.text, (0, 0), self.text_colour, self.text_size, self.bold, self.italic)
+            frame_centerx, frame_centery = self.rect.center
+            x,y = self.text_label.rect.size
+            text_label_pos = (frame_centerx - x/2, frame_centery - y/2)
 
-        self.text_label.change_pos(text_label_pos)
+            self.text_label.change_pos(text_label_pos)
 
     def render(self, surface: pygame.Surface):
         if not super().render(surface):
             return
         
         self.frame.render(surface)
-        self.text_label.render(surface)
+        if self.text != "":
+            self.text_label.render(surface)
 
     def update(self, dt):
         pass
 
     def handle_event(self, event):
-        # will add input very soon
-        pass
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+
+            if self.rect.collidepoint(mouse_pos):
+                self.action()
+
+    def change_colour(self, new_colour: tuple[int, int, int], new_border_colour: tuple[int, int, int]):
+        self.colour = new_colour
+        self.border_colour = new_border_colour
+
+        self.frame.fill_colour = new_colour
+        self.frame.border_colour = new_border_colour
