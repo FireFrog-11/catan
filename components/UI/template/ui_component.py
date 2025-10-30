@@ -12,7 +12,7 @@ class UIComponent(ABC):
         self.name = name
         self.visible = visible
         self.enabled = enabled
-        self.rect = pygame.FRect(0, 0, 0, 0,) # Override in subclasses
+        self.rect: pygame.Rect = pygame.FRect(0, 0, 0, 0,) # Override in subclasses
 
     def set_position(self, x: float, y: float):
         """

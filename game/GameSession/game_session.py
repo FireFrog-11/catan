@@ -39,7 +39,7 @@ class GameSession:
 
         # create players
         for i in range(player_amount):
-            players.append(Player(player_colours[i]), i + 1)
+            players.append(Player(player_colours[i], i + 1)) # add one to start player number at 1
 
         return players
 
