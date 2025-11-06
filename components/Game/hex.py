@@ -2,7 +2,9 @@ import os
 from typing import TYPE_CHECKING
 import math
 import json
+from globals.scale_factor import get_scale_factors
 from globals.base_directory import get_project_root
+import pygame
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from components.Game.vertex import Vertex
@@ -13,6 +15,9 @@ class Hex:
     This class represents a hex tile in the game board.
     """
     def __init__(self, q: int, r: int, hex_type: str, number_tile: int):
+        # scale factors
+        self.scale_factor_x, self.scale_factor_y = get_scale_factors(pygame.display.get_surface())
+
         self.hex_x_offset = 0
         self.hex_y_offset = 0
         self.hex_size = 0
@@ -33,11 +38,11 @@ class Hex:
         """
         q, r = axial_coordinates
 
-        x = self.hex_size * math.sqrt(3) * (q + r/2)
-        y = self.hex_size * 3/2 * r
+        x = self.hex_size * math.sqrt(3) * (q + r/2) * self.scale_factor_x
+        y = self.hex_size * 3/2 * r * self.scale_factor_y
 
-        x += self.hex_x_offset
-        y += self.hex_y_offset
+        x += self.hex_x_offset * self.scale_factor_x
+        y += self.hex_y_offset * self.scale_factor_y
 
         return (x, y)
     
@@ -52,8 +57,8 @@ class Hex:
             angle_deg = 60 * i - 30
 
             angle_rad = math.radians(angle_deg)
-            x = center_x + self.hex_size * math.cos(angle_rad)
-            y = center_y + self.hex_size * math.sin(angle_rad)
+            x = center_x + self.hex_size * math.cos(angle_rad) * self.scale_factor_x
+            y = center_y + self.hex_size * math.sin(angle_rad) * self.scale_factor_y
             points.append((x, y))
 
         return points

@@ -1,4 +1,5 @@
 from components.UI.template.ui_component import UIComponent
+from globals.scale_factor import get_scale_factors
 import pygame
 
 pygame.init()
@@ -13,7 +14,22 @@ class Frame(UIComponent):
         self.border_thickness: int = border_thickness
         self.border_radius: int = border_radius
 
-        self.rect = pygame.FRect((self.position, self.size))
+        # scale factors
+        scale_factor_x, scale_factor_y = get_scale_factors(pygame.display.get_surface())
+
+        # get scaled position
+        x, y = self.position
+        scaled_x = x * scale_factor_x
+        scaled_y = y * scale_factor_y
+        self.scaled_position = (scaled_x, scaled_y)
+
+        # get scaled size
+        x, y = self.size
+        scaled_x = x * scale_factor_x
+        scaled_y = y * scale_factor_y
+        self.scaled_size = (scaled_x, scaled_y)
+
+        self.rect = pygame.FRect((self.scaled_position, self.scaled_size))
 
     def render(self, surface: pygame.Surface):
         if not super().render(surface):

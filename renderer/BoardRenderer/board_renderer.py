@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import pygame
 import json
 from globals.base_directory import get_project_root
+from globals.scale_factor import get_scale_factors
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from game.GameSession.game_session import GameSession
@@ -19,6 +20,9 @@ class BoardRenderer:
         self.config = self._load_config()
 
         self.game_session: GameSession = game_session
+
+        # scale factors
+        self.scale_factor_x, self.scale_factor_y = get_scale_factors(pygame.display.get_surface())
 
     def render_board(self, screen):
         self._draw_background(screen)
@@ -80,7 +84,9 @@ class BoardRenderer:
         background_colour = self.config["number_tile"]["number_tile_background_colour"]
         background_radius = self.config["number_tile"]["background_radius"]
 
-        font = pygame.font.SysFont(font_name, font_size, font_bold)
+        scaled_font_size = int(font_size * min(self.scale_factor_x, self.scale_factor_y))
+
+        font = pygame.font.SysFont(font_name, scaled_font_size, font_bold)
 
         text = font.render(str(number_tile), True, font_colour)
         text_rect = text.get_frect(center=(coordinates))
