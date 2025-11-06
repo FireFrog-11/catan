@@ -23,42 +23,10 @@ class CatanState(GameState):
         self.building_city = False
         self.building_devcard = False
 
-        # build UI panel
-        build_ui_background = Frame(name="build_ui_background", size=(250,600), position=(0,50), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
-        ui_manager.add_component(build_ui_background)
+        self.create_build_ui_panel()
 
-        self.build_road_button = Button(name="build_road_button", position=(25, 75), size=(75, 75), colour=(255,0,0), action=self.build_road_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
-        ui_manager.add_component(self.build_road_button)
-        self.build_road_text = TextLabel(name="build_road_text", text="Road", position=(115, 75), font_colour=(255,255,255), font_size=20, bold=True)
-        ui_manager.add_component(self.build_road_text)
-        self.build_road_cost = TextLabel(name="build_road_cost", text="Cost: \n 1 wood, 1 brick", position=(115, 105), font_colour=(255,255,255), font_size=13, bold=True)
-        ui_manager.add_component(self.build_road_cost)
-
-        self.build_settlement_button = Button(name="build_settlement_button", position=(25, 215), size=(75, 75), colour=(255,0,0), action=self.build_settlement_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
-        ui_manager.add_component(self.build_settlement_button)
-        self.build_settlement_text = TextLabel(name="build_settlement_text", text="Settlement", position=(115, 215), font_colour=(255,255,255), font_size=20, bold=True)
-        ui_manager.add_component(self.build_settlement_text)
-        self.build_settlement_cost = TextLabel(name="build_settlement_cost", text="Cost: \n 1 wood, 1 brick \n 1 sheep, 1 wheat", position=(115, 245), font_colour=(255,255,255), font_size=13, bold=True)
-        ui_manager.add_component(self.build_settlement_cost)
-
-        self.build_city_button = Button(name="build_city_button", position=(25, 355), size=(75, 75), colour=(255,0,0), action=self.build_city_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
-        ui_manager.add_component(self.build_city_button)
-        self.build_city_text = TextLabel(name="build_city_text", text="City", position=(115, 355), font_colour=(255,255,255), font_size=20, bold=True)
-        ui_manager.add_component(self.build_city_text)
-        self.build_city_cost = TextLabel(name="build_city_cost", text="Cost: \n 2 wheat, 3 ore", position=(115, 385), font_colour=(255,255,255), font_size=13, bold=True)
-        ui_manager.add_component(self.build_city_cost)
-
-        self.build_devcard_button = Button(name="build_devcard_button", position=(25, 495), size=(75, 75), colour=(255,0,0), action=self.build_devcard_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
-        ui_manager.add_component(self.build_devcard_button)
-        self.build_devcard_text = TextLabel(name="build_devcard_text", text="Devcard", position=(115, 495), font_colour=(255,255,255), font_size=20, bold=True)
-        ui_manager.add_component(self.build_devcard_text)
-        self.build_devcard_cost = TextLabel(name="build_devcard_cost", text="Cost: \n 1 wool, 1 wheat \n 1 ore", position=(115, 525), font_colour=(255,255,255), font_size=13, bold=True)
-        ui_manager.add_component(self.build_devcard_cost)
-
-        # resources panel
-        resource_ui_background = Frame(name="resource_ui_background", size=(425,200), position=(0,650), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
-        ui_manager.add_component(resource_ui_background)
-
+        self.create_resource_ui_panel()
+        
         # player panel
         player_ui_background = Frame(name="player_ui_background", size=(250,700), position=(1275,50), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
         ui_manager.add_component(player_ui_background)
@@ -100,6 +68,60 @@ class CatanState(GameState):
         self.build_settlement_button.handle_event(event)
         self.build_city_button.handle_event(event)
         self.build_devcard_button.handle_event(event)
+
+    def create_build_ui_panel(self):
+        build_ui_background = Frame(name="build_ui_background", size=(250,600), position=(0,50), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
+        ui_manager.add_component(build_ui_background)
+
+        self.build_road_button = Button(name="build_road_button", position=(25, 75), size=(75, 75), colour=(255,0,0), action=self.build_road_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
+        ui_manager.add_component(self.build_road_button)
+        self.build_road_text = TextLabel(name="build_road_text", text="Road", position=(115, 75), font_colour=(255,255,255), font_size=20, bold=True)
+        ui_manager.add_component(self.build_road_text)
+        self.build_road_cost = TextLabel(name="build_road_cost", text="Cost: \n 1 wood, 1 brick", position=(115, 105), font_colour=(255,255,255), font_size=13, bold=True)
+        ui_manager.add_component(self.build_road_cost)
+
+        self.build_settlement_button = Button(name="build_settlement_button", position=(25, 215), size=(75, 75), colour=(255,0,0), action=self.build_settlement_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
+        ui_manager.add_component(self.build_settlement_button)
+        self.build_settlement_text = TextLabel(name="build_settlement_text", text="Settlement", position=(115, 215), font_colour=(255,255,255), font_size=20, bold=True)
+        ui_manager.add_component(self.build_settlement_text)
+        self.build_settlement_cost = TextLabel(name="build_settlement_cost", text="Cost: \n 1 wood, 1 brick \n 1 sheep, 1 wheat", position=(115, 245), font_colour=(255,255,255), font_size=13, bold=True)
+        ui_manager.add_component(self.build_settlement_cost)
+
+        self.build_city_button = Button(name="build_city_button", position=(25, 355), size=(75, 75), colour=(255,0,0), action=self.build_city_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
+        ui_manager.add_component(self.build_city_button)
+        self.build_city_text = TextLabel(name="build_city_text", text="City", position=(115, 355), font_colour=(255,255,255), font_size=20, bold=True)
+        ui_manager.add_component(self.build_city_text)
+        self.build_city_cost = TextLabel(name="build_city_cost", text="Cost: \n 2 wheat, 3 ore", position=(115, 385), font_colour=(255,255,255), font_size=13, bold=True)
+        ui_manager.add_component(self.build_city_cost)
+
+        self.build_devcard_button = Button(name="build_devcard_button", position=(25, 495), size=(75, 75), colour=(255,0,0), action=self.build_devcard_button_function, border_radius=8, border_colour=(255,0,0), border_width=8)
+        ui_manager.add_component(self.build_devcard_button)
+        self.build_devcard_text = TextLabel(name="build_devcard_text", text="Devcard", position=(115, 495), font_colour=(255,255,255), font_size=20, bold=True)
+        ui_manager.add_component(self.build_devcard_text)
+        self.build_devcard_cost = TextLabel(name="build_devcard_cost", text="Cost: \n 1 wool, 1 wheat \n 1 ore", position=(115, 525), font_colour=(255,255,255), font_size=13, bold=True)
+        ui_manager.add_component(self.build_devcard_cost)
+
+    def create_resource_ui_panel(self):
+        resource_ui_background = Frame(name="resource_ui_background", size=(425,200), position=(0,650), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
+        ui_manager.add_component(resource_ui_background)
+
+        brick_resource_text = TextLabel(name="brick_resource_text", text="Brick: 0", position=(25, 665), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(brick_resource_text)
+
+        wood_resource_text = TextLabel(name="wood_resource_text", text="Wood: 0", position=(25, 695), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(wood_resource_text)
+
+        wheat_resource_text = TextLabel(name="wheat_resource_text", text="Wheat: 0", position=(25, 725), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(wheat_resource_text)
+
+        sheep_resource_text = TextLabel(name="sheep_resource_text", text="Sheep: 0", position=(25, 755), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(sheep_resource_text)
+
+        ore_resource_text = TextLabel(name="ore_resource_text", text="Ore: 0", position=(25, 785), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(ore_resource_text)
+
+        total_resource_text = TextLabel(name="total_resource_text", text="Total: 0", position=(25, 815), font_colour=(0, 255, 0), font_size=20, bold=True)
+        ui_manager.add_component(total_resource_text)
 
     def end_button_function(self):
         print("end turn")
