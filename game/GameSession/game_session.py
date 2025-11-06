@@ -1,6 +1,9 @@
 import json
+import os
+
 from components.Game.player import Player
 from components.Game.board import Board
+from globals.base_directory import get_project_root
 
 class GameSession:
     """
@@ -49,7 +52,10 @@ class GameSession:
 
         Will be replaced once save/load system is made.
         """
-        with open(r"C:\Users\isaac\OneDrive\Documents\GitHub\catan\config\game_config.json", "r") as f:
+        root_path = get_project_root()
+        config_path = os.path.join(root_path, "config", "game_config.json")
+
+        with open(config_path, "r") as f:
             file = json.load(f)
 
             self.player_colours = file["players"]

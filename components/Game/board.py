@@ -1,6 +1,9 @@
+import os
+
 from components.Game.hex import Hex
 from components.Game.edge import Edge
 from components.Game.vertex import Vertex
+from globals.base_directory import get_project_root
 import random
 import json
 
@@ -130,7 +133,10 @@ class Board:
 
         Will be replaced once save/load system is made.
         """
-        with open(r"C:\Users\isaac\OneDrive\Documents\GitHub\catan\config\game_config.json", "r") as f:
+        root_path = get_project_root()
+        config_path = os.path.join(root_path, "config", "game_config.json")
+
+        with open(config_path, "r") as f:
             file = json.load(f)
 
             self.hex_type_amounts = file["hex_info"]["hex_type_list"]

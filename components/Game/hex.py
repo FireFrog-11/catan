@@ -1,6 +1,8 @@
+import os
 from typing import TYPE_CHECKING
 import math
 import json
+from globals.base_directory import get_project_root
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
     from components.Game.vertex import Vertex
@@ -71,7 +73,10 @@ class Hex:
 
         Will be replaced once save/load system is made.
         """
-        with open(r"C:\Users\isaac\OneDrive\Documents\GitHub\catan\config\renderer_config.json", "r") as f:
+        root_path = get_project_root()
+        config_path = os.path.join(root_path, "config", "renderer_config.json")
+
+        with open(config_path, "r") as f:
             file = json.load(f)
 
             self.hex_x_offset = file["hex_x_offset"]
