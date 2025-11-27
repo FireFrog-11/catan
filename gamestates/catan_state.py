@@ -7,6 +7,7 @@ from globals.uimanager import ui_manager
 from components.UI.button import Button
 from components.UI.frame import Frame
 from components.UI.text_label import TextLabel
+from globals.game_session import game_session
 import pygame
 
 if TYPE_CHECKING: # only for types. NOT IMPORTANT
@@ -42,6 +43,8 @@ class CatanState(GameState):
         # use dev-card button
         self.devcard_button = Button(name="devcard_button", position=(1175, 762.5), size=(100, 100), colour=(255,165,0), action=self.devcard_button_function, border_radius=8, border_colour=(255,165,0), border_width=8, text="Devcard", text_colour=(255,255,255), text_size=25, bold=True)
         ui_manager.add_component(self.devcard_button)
+
+        self.create_road_placement_slots()
         
 
     def exit(self):
@@ -54,7 +57,28 @@ class CatanState(GameState):
         pass
 
     def update(self, dt: float):
-        pass
+        # getting player data from game_session
+        current_player = game_session.player_turn
+        player = game_session.players[current_player - 1]
+        
+        wood_amount = player.resource_cards.get("wood")
+        wheat_amount = player.resource_cards.get("wheat")
+        brick_amount = player.resource_cards.get("brick")
+        ore_amount = player.resource_cards.get("ore")
+        sheep_amount = player.resource_cards.get("sheep")
+
+        # using data to update text
+        self.wood_resource_text.set_text(f"Wood: {wood_amount}")
+        self.wheat_resource_text.set_text(f"Wheat: {wheat_amount}")
+        self.brick_resource_text.set_text(f"Brick: {brick_amount}")
+        self.ore_resource_text.set_text(f"Ore: {ore_amount}")
+        self.sheep_resource_text.set_text(f"Sheep: {sheep_amount}")
+        self.total_resource_text.set_text(f"Total: {wood_amount + wheat_amount + brick_amount + ore_amount + sheep_amount}")
+
+        if wood_amount + wheat_amount + brick_amount + ore_amount + sheep_amount >= 7:
+            self.total_resource_text.change_colour((255, 0, 0))
+        else:
+            self.total_resource_text.change_colour((0,255,0))
 
     def render(self, screen: pygame.Surface):
         self.board_renderer.render_board(screen)
@@ -102,26 +126,38 @@ class CatanState(GameState):
         ui_manager.add_component(self.build_devcard_cost)
 
     def create_resource_ui_panel(self):
-        resource_ui_background = Frame(name="resource_ui_background", size=(425,200), position=(0,650), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
-        ui_manager.add_component(resource_ui_background)
+        self.resource_ui_background = Frame(name="resource_ui_background", size=(425,200), position=(0,650), fill_colour=(0,0,0), border_colour=(255,255,255), border_thickness=8, border_radius=8)
+        ui_manager.add_component(self.resource_ui_background)
 
-        brick_resource_text = TextLabel(name="brick_resource_text", text="Brick: 0", position=(25, 665), font_colour=(255, 255, 255), font_size=20, bold=True)
-        ui_manager.add_component(brick_resource_text)
+        self.brick_resource_text = TextLabel(name="brick_resource_text", text="Brick: 0", position=(25, 665), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(self.brick_resource_text)
 
-        wood_resource_text = TextLabel(name="wood_resource_text", text="Wood: 0", position=(25, 695), font_colour=(255, 255, 255), font_size=20, bold=True)
-        ui_manager.add_component(wood_resource_text)
+        self.wood_resource_text = TextLabel(name="wood_resource_text", text="Wood: 0", position=(25, 695), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(self.wood_resource_text)
 
-        wheat_resource_text = TextLabel(name="wheat_resource_text", text="Wheat: 0", position=(25, 725), font_colour=(255, 255, 255), font_size=20, bold=True)
-        ui_manager.add_component(wheat_resource_text)
+        self.wheat_resource_text = TextLabel(name="wheat_resource_text", text="Wheat: 0", position=(25, 725), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(self.wheat_resource_text)
 
-        sheep_resource_text = TextLabel(name="sheep_resource_text", text="Sheep: 0", position=(25, 755), font_colour=(255, 255, 255), font_size=20, bold=True)
-        ui_manager.add_component(sheep_resource_text)
+        self.sheep_resource_text = TextLabel(name="sheep_resource_text", text="Sheep: 0", position=(25, 755), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(self.sheep_resource_text)
 
-        ore_resource_text = TextLabel(name="ore_resource_text", text="Ore: 0", position=(25, 785), font_colour=(255, 255, 255), font_size=20, bold=True)
-        ui_manager.add_component(ore_resource_text)
+        self.ore_resource_text = TextLabel(name="ore_resource_text", text="Ore: 0", position=(25, 785), font_colour=(255, 255, 255), font_size=20, bold=True)
+        ui_manager.add_component(self.ore_resource_text)
 
-        total_resource_text = TextLabel(name="total_resource_text", text="Total: 0", position=(25, 815), font_colour=(0, 255, 0), font_size=20, bold=True)
-        ui_manager.add_component(total_resource_text)
+        self.total_resource_text = TextLabel(name="total_resource_text", text="Total: 0", position=(25, 815), font_colour=(0, 255, 0), font_size=20, bold=True)
+        ui_manager.add_component(self.total_resource_text)
+
+    def create_road_placement_slots(self):
+        vertices = game_session.board.vertices
+        index = 0
+
+        for vertex in vertices.values():
+                x_pos = vertex.pixel_coordinates[0] - 25
+                y_pos = vertex.pixel_coordinates[1] - 25
+
+                placement_slot = Frame(name=f"placement_slot_{index}", size=(50, 50), position=(x_pos, y_pos), fill_colour=(135, 206, 235), border_colour=(135, 206, 235), border_thickness=0, border_radius=0)
+                ui_manager.add_component(placement_slot)
+                index += 1
 
     def end_button_function(self):
         print("end turn")

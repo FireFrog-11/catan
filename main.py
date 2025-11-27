@@ -1,4 +1,9 @@
 import pygame
+
+pygame.init()
+
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN) # screen is created before calling any imports because many imports require game screen
+
 import json
 import sys
 from globals.gamestatemanager import gamestate_manager
@@ -6,11 +11,8 @@ from gamestates.catan_state import CatanState
 
 class Main:
     def __init__(self):
-        pygame.init()
-
         self.settings = self.load_settings()
 
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
 
         self.gamestate_manager = gamestate_manager
@@ -38,7 +40,7 @@ class Main:
 
             self.gamestate_manager.update(dt)
 
-            self.gamestate_manager.render(self.screen)
+            self.gamestate_manager.render(screen)
 
             pygame.display.update()
 

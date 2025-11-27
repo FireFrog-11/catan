@@ -32,6 +32,9 @@ class Hex:
         self.vertices: list[Vertex] = []
         self.vertices_pixel_coordinates: list[tuple[float, float]] = self.get_hex_vertex_coords()
 
+
+    
+
     def axial_to_pixel(self, axial_coordinates: tuple[int, int]) -> tuple[float, float]:
         """
         This converts axial coordinates into pixel coordinates.
@@ -71,6 +74,8 @@ class Hex:
         z = axial_coordinates[1]
         y = -x -z
         return (x, y, z)
+
+    
     
     def _load_config(self):
         """
@@ -87,3 +92,5 @@ class Hex:
             self.hex_x_offset = file["hex_x_offset"]
             self.hex_y_offset = file["hex_y_offset"]
             self.hex_size = file["hex_size"]
+
+    

@@ -1,143 +1,255 @@
 import os
+import random
+import json
 
 from components.Game.hex import Hex
 from components.Game.edge import Edge
 from components.Game.vertex import Vertex
 from globals.base_directory import get_project_root
-import random
-import json
+
+# cube neighbor directions (pointy-top)
+NEIGHBORS = [
+    (1, -1, 0),   # 0 E
+    (1, 0, -1),   # 1 NE
+    (0, 1, -1),   # 2 NW
+    (-1, 1, 0),   # 3 W
+    (-1, 0, 1),   # 4 SW
+    (0, -1, 1),   # 5 SE
+]
+
+
+def add_cube(a, b):
+    return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
+
 
 class Board:
     """
-    This class represents a game board.
-
-    It contains all the vertices, edges and hexes.
-    It also contains all the links between these components.
+    Represents the full game board including:
+    - hexes
+    - vertices
+    - edges
+    - all links between them
     """
+
     def __init__(self):
-        self.size: int = 2 # radius of catan board (default catan board is radius 2)
-        self.hexes: dict[tuple[int, int], Hex] = {} # dict of all hexes
-        self.vertices: dict[tuple[int, int, int], Vertex] = {} # dict of all vertices
-        self.edges: dict[tuple[tuple[int, int, int], tuple[int, int, int]], Edge] = {} # dict of all edges
+        self.size: int = 2  # radius of board
+
+        # keys:
+        #   hexes    -> (q, r)
+        #   vertices -> frozenset of cube coords (1–3 hex centers)
+        #   edges    -> frozenset of two vertex keys
+        self.hexes: dict[tuple[int, int], Hex] = {}
+        self.vertices: dict[frozenset, Vertex] = {}
+        self.edges: dict[frozenset, Edge] = {}
 
         self.hex_type_amounts: list[str] = []
         self.number_tile_amounts: list[int] = []
 
         self._load_config()
 
-        self.CORNER_OFFSETS: list[tuple[int, int, int]] = [
-            (1, 0, -1),
-            (1, -1, 0),
-            (0, -1, 1),
-            (-1, 0, 1),
-            (-1, 1, 0),
-            (0, 1, -1)
-        ]
+    # --------------------------------------------------------
+    # MAIN ENTRY POINT
+    # --------------------------------------------------------
 
     def create_board(self):
         """
-        This function creates the actual game board.
-
-        THIS SHOULD ONLY BE CALLED ONCE.
+        Generates the full hex board. Call only once.
+        Radius 2 Catan board: 19 hexes.
         """
+        
         for q in range(-self.size, self.size + 1):
             for r in range(-self.size, self.size + 1):
                 if abs(q + r) <= self.size:
                     self.build_hex(q, r)
-
-        self.link_graph() # automatically sets up board links
+        """
+        self.link_graph()
+        
+        """
+    # --------------------------------------------------------
+    # HEX / TILE ASSIGNMENT
+    # --------------------------------------------------------
 
     def get_hex_info(self):
-        """
-        This function is the logic for giving each hex tile its type and number tile.
-        """
+        """Assign random type and number tile."""
         hex_type = random.choice(self.hex_type_amounts)
         self.hex_type_amounts.remove(hex_type)
 
-        if hex_type != 'desert':
+        if hex_type != "desert":
             number_tile = random.choice(self.number_tile_amounts)
             self.number_tile_amounts.remove(number_tile)
-            return (hex_type, number_tile)
+            return hex_type, number_tile
         else:
-            return (hex_type, 0) # desert tile gets given number tile of 0
+            return hex_type, 0
+
+    # --------------------------------------------------------
+    # CORE BOARD CONSTRUCTION
+    # --------------------------------------------------------
 
     def build_hex(self, q: int, r: int):
-        """
-        This function creates a hex for the given coordinates.
-
-        THIS FUNCTION SHOULD NOT NEED TO BE CALLED OUTSIDE THE CREATE_BOARD FUNCTION.
-        """
+        """Construct a single hex and its vertices/edges."""
         hex_type, number_tile = self.get_hex_info()
-        
         hex_ = Hex(q, r, hex_type, number_tile)
-
         self.hexes[(q, r)] = hex_
-        x, y, z = hex_.cube_coordinates
 
+        center = hex_.cube_coordinates  # cube coordinate (x, y, z)      
+
+
+
+
+        # 3 hex-centres that meet at this vertex: center + two neighbours
+        n1 = add_cube(center, NEIGHBORS[0])
+        n2 = add_cube(center, NEIGHBORS[(-1) % 6])
+
+        # geometric vertex ID (works even if some hexes are "off-board")
+        vertex_key = frozenset([center, n1, n2])
+
+        # create vertex if needed
+        if vertex_key not in self.vertices:
+            self.vertices[vertex_key] = Vertex(vertex_key)
+
+        vertex = self.vertices[vertex_key]
+        vertex.hexes.append(hex_)
+
+        # pixel corner order in Hex is already BR, TR, T, TL, BL, B
+        vertex.pixel_coordinates = hex_.vertices_pixel_coordinates[0]
+        hex_.vertices.append(vertex)
+
+
+
+
+
+
+        # 3 hex-centres that meet at this vertex: center + two neighbours
+        n1 = add_cube(center, NEIGHBORS[1])
+        n2 = add_cube(center, NEIGHBORS[(0) % 6])
+
+        # geometric vertex ID (works even if some hexes are "off-board")
+        vertex_key = frozenset([center, n1, n2])
+
+        # create vertex if needed
+        if vertex_key not in self.vertices:
+            self.vertices[vertex_key] = Vertex(vertex_key)
+
+        vertex = self.vertices[vertex_key]
+        vertex.hexes.append(hex_)
+
+        # pixel corner order in Hex is already BR, TR, T, TL, BL, B
+        vertex.pixel_coordinates = hex_.vertices_pixel_coordinates[1]
+        hex_.vertices.append(vertex)
+
+
+
+
+
+
+        '''
+        # 3 hex-centres that meet at this vertex: center + two neighbours
+        n1 = add_cube(center, NEIGHBORS[2])
+        n2 = add_cube(center, NEIGHBORS[(1) % 6])
+
+        # geometric vertex ID (works even if some hexes are "off-board")
+        vertex_key = frozenset([center, n1, n2])
+
+        # create vertex if needed
+        if vertex_key not in self.vertices:
+            self.vertices[vertex_key] = Vertex(vertex_key)
+
+        vertex = self.vertices[vertex_key]
+        vertex.hexes.append(hex_)
+
+        # pixel corner order in Hex is already BR, TR, T, TL, BL, B
+        vertex.pixel_coordinates = hex_.vertices_pixel_coordinates[2]
+        hex_.vertices.append(vertex)
+        '''
+
+        '''
+        # --- build all 6 corners ---
         for i in range(6):
-            # vertices
-            offset1 = self.CORNER_OFFSETS[i]
-            vertex1_key = (x + offset1[0], y + offset1[1], z + offset1[2])
-            if vertex1_key not in self.vertices:
-                self.vertices[vertex1_key] = Vertex(vertex1_key)
-            vertex = self.vertices[vertex1_key]
+            # 3 hex-centres that meet at this vertex: center + two neighbours
+            n1 = add_cube(center, NEIGHBORS[i])
+            n2 = add_cube(center, NEIGHBORS[(i - 1) % 6])
+
+            # geometric vertex ID (works even if some hexes are "off-board")
+            vertex_key = frozenset([center, n1, n2])
+
+            # create vertex if needed
+            if vertex_key not in self.vertices:
+                self.vertices[vertex_key] = Vertex(vertex_key)
+
+            vertex = self.vertices[vertex_key]
             vertex.hexes.append(hex_)
+
+            # pixel corner order in Hex is already BR, TR, T, TL, BL, B
             vertex.pixel_coordinates = hex_.vertices_pixel_coordinates[i]
             hex_.vertices.append(vertex)
 
-            # edges
+            # --- build edge between this corner and the next one ---
             next_i = (i + 1) % 6
-            offset2 = self.CORNER_OFFSETS[next_i]
-            vertex2_key = (x + offset2[0], y + offset2[1], z + offset2[2])
 
-            edge_key = (vertex1_key, vertex2_key) if vertex1_key < vertex2_key else (vertex2_key, vertex1_key) # ensures consisted ordering. (V1, V2) == (V2, V1)
+            nn1 = add_cube(center, NEIGHBORS[next_i])
+            nn2 = add_cube(center, NEIGHBORS[(next_i - 1) % 6])
+            vertex2_key = frozenset([center, nn1, nn2])
+
+            if vertex2_key not in self.vertices:
+                # in practice this will usually be created when that corner
+                # itself is processed, but this makes it bulletproof
+                self.vertices[vertex2_key] = Vertex(vertex2_key)
+
+            edge_key = frozenset([vertex_key, vertex2_key])
+
             if edge_key not in self.edges:
-                self.edges[edge_key] = Edge(vertex1_key, vertex2_key)
+                self.edges[edge_key] = Edge(vertex_key, vertex2_key)
+
             edge = self.edges[edge_key]
             edge.hexes.append(hex_)
             hex_.edges.append(edge)
+        '''
+
+    # --------------------------------------------------------
+    # GRAPH LINKING
+    # --------------------------------------------------------
 
     def link_graph(self):
-        """
-        This function creates all the links between the vertices and edges.
+        """Connect all vertices, edges, and hexes in both directions."""
 
-        THIS FUNCTION SHOULD NOT NEED TO BE CALLED OUTSIDE THE CREATE_BOARD FUNCTION.
-        """
-        # links edges to vertices and vertices to edges
+        # --- edges → vertices & vertices → edges ---
         for edge_key, edge in self.edges.items():
-            vertex1_key, vertex2_key = edge_key
-            vertex1 = self.vertices[vertex1_key]
-            vertex2 = self.vertices[vertex2_key]
+            vkeys = list(edge_key)  # two vertex keys
+            vertex1 = self.vertices[vkeys[0]]
+            vertex2 = self.vertices[vkeys[1]]
+
             edge.vertices = [vertex1, vertex2]
-            edge.pixel_coordinates = [vertex1.pixel_coordinates, vertex2.pixel_coordinates]
+            edge.pixel_coordinates = [
+                vertex1.pixel_coordinates,
+                vertex2.pixel_coordinates,
+            ]
+
             vertex1.edges.append(edge)
             vertex2.edges.append(edge)
 
-        # links vertices to neighbouring vertices
+        # --- vertices → neighbouring vertices ---
         for vertex in self.vertices.values():
             for edge in vertex.edges:
-                for new_vertex in edge.vertices:
-                    if new_vertex is not vertex and new_vertex not in vertex.vertices:
-                        vertex.vertices.append(new_vertex)
+                for other_v in edge.vertices:
+                    if other_v is not vertex and other_v not in vertex.vertices:
+                        vertex.vertices.append(other_v)
 
-        # links edges to neighbouring edges
+        # --- edges → neighbouring edges ---
         for edge in self.edges.values():
             for vertex in edge.vertices:
-                for new_edge in vertex.edges:
-                    if new_edge is not edge and new_edge not in edge.edges:
-                        edge.edges.append(new_edge)
+                for other_edge in vertex.edges:
+                    if other_edge is not edge and other_edge not in edge.edges:
+                        edge.edges.append(other_edge)
+
+    # --------------------------------------------------------
+    # LOADING
+    # --------------------------------------------------------
 
     def _load_config(self):
-        """
-        Loads config files for game.
-
-        Will be replaced once save/load system is made.
-        """
         root_path = get_project_root()
         config_path = os.path.join(root_path, "config", "game_config.json")
 
         with open(config_path, "r") as f:
-            file = json.load(f)
-
-            self.hex_type_amounts = file["hex_info"]["hex_type_list"]
-            self.number_tile_amounts = file["hex_info"]["number_tile_list"]
+            data = json.load(f)
+            self.hex_type_amounts = data["hex_info"]["hex_type_list"]
+            self.number_tile_amounts = data["hex_info"]["number_tile_list"]

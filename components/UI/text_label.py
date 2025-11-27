@@ -33,6 +33,10 @@ class TextLabel(UIComponent):
             self.text_surface = self.font.render(self.text, True, self.font_colour)
             self.rect.size = self.text_surface.get_size()
 
+    def change_colour(self, new_colour):
+        self.font_colour = new_colour
+        self.text_surface = self.font.render(self.text, True, self.font_colour)
+
     def change_pos(self, new_pos: tuple[int, float]):
         if new_pos != self.rect.topleft:
             self.rect.topleft = (new_pos[0], new_pos[1])

@@ -29,7 +29,7 @@ class Player:
         self.player_colour: str = player_colour
         self.player_number: int = player_number
 
-        self.resource_cards: dict[str, int] = {}
+        self.resource_cards: dict[str, int] = {"wood": 5, "wheat": 3, "ore": 2, "sheep": 1, "brick": 4}
         self.development_cards: dict[str, list[DevelopmentCard]] = {}
         self.used_development_cards: int[str, int] = {}
 
